@@ -15,6 +15,8 @@
 //
 import Foundation
 
+#if canImport(CCuda)
+
 public extension CudaQueue {
     //--------------------------------------------------------------------------
     /// abs
@@ -395,3 +397,5 @@ public extension CudaQueue {
     {
     }
 }
+
+#endif

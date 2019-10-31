@@ -13,8 +13,9 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 //
-import CVulkan
 
+#if canImport(CVulkan)
+import CVulkan
 
 //==============================================================================
 // vkCheck
@@ -76,3 +77,5 @@ private let errorStrings = [
     // VK_ERROR_INVALID_EXTERNAL_HANDLE_KHR = VK_ERROR_INVALID_EXTERNAL_HANDLE,
     // VK_ERROR_INVALID_EXTERNAL_HANDLE_KHR: "VK_ERROR_INVALID_EXTERNAL_HANDLE_KHR",
 ]
+
+#endif

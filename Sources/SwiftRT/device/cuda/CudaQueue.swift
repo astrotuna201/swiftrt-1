@@ -14,6 +14,8 @@
 // limitations under the License.
 //
 import Foundation
+
+#if canImport(CCuda)
 import CCuda
 
 //import CudaKernels
@@ -416,3 +418,5 @@ public final class CudaReductionContext: ReductionContext {
                          zero: false)
     }
 }
+
+#endif

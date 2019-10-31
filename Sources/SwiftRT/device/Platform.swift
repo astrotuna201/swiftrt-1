@@ -61,15 +61,19 @@ final public class Platform: LocalPlatform {
         return Platform.local.services[cpuServiceName]!.devices[0]
     }()
 
+    #if canImport(CCuda)
     // shortcut to cuda sercoe
     public static var cuda: CudaService? = {
         return Platform.local.services[cudaServiceName] as? CudaService
     }()
+    #endif
     
+    #if canImport(CVulkan)
     // shortcut to vulkan service
     public static var vulkan: VulkanService? = {
         return Platform.local.services[vulkanServiceName] as? VulkanService
     }()
+    #endif
 
     //--------------------------------------------------------------------------
     // these are to aid unit tests

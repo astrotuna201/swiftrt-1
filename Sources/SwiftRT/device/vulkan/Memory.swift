@@ -14,6 +14,8 @@
 // limitations under the License.
 //
 import Foundation
+
+#if canImport(CVulkan)
 import CVulkan
 
 //==============================================================================
@@ -66,3 +68,5 @@ extension LocalComputeDevice {
         fatalError()
     }
 }
+
+#endif

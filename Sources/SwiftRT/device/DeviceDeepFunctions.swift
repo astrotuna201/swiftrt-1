@@ -16,6 +16,12 @@
 import Foundation
 
 //==============================================================================
+/// NanPropagation
+public enum NanPropagation: Int, Codable {
+    case propagate, noPropagate
+}
+
+//==============================================================================
 /// Convolution
 ///
 public class ConvolutionInferring<T> where
@@ -35,6 +41,7 @@ public class ConvolutionTraining<T>: ConvolutionInferring<T> where
     { fatalError("Abstract") }
 }
 
+#if canImport(CCuda)
 public extension DeviceQueue {
     func createConvolutionInferring<T>(
         x: T,
@@ -106,6 +113,7 @@ public extension CudaQueue {
         fatalError("cpu not implemented")
     }
 }
+#endif
 
 //==============================================================================
 // ConvolutionProperties
@@ -228,6 +236,7 @@ public extension DeviceQueue {
     }
 }
 
+#if canImport(CCuda)
 public extension CudaQueue {
     func createActivation<T>(
         x: T,
@@ -241,6 +250,7 @@ public extension CudaQueue {
                                            nan: nan, reluCeiling: reluCeiling)
     }
 }
+#endif
 
 //==============================================================================
 public enum TransposeOp: Int, Codable {

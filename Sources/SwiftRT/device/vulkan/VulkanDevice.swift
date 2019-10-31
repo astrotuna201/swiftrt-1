@@ -14,6 +14,8 @@
 // limitations under the License.
 //
 import Foundation
+
+#if canImport(CVulkan)
 import CVulkan
 
 public class VulkanDevice : LocalComputeDevice {
@@ -141,3 +143,5 @@ public extension DeviceLimits {
         maxMemoryAllocationCount = Int(limits.maxMemoryAllocationCount)
     }
 }
+
+#endif

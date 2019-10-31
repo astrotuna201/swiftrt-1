@@ -14,6 +14,8 @@
 // limitations under the License.
 //
 import Foundation
+
+#if canImport(CVulkan)
 import CVulkan
 
 //==============================================================================
@@ -29,3 +31,4 @@ public let VK_API_VERSION_1_0 = VK_MAKE_VERSION(1, 0, 0)
 // Vulkan 1.1 version number
 public let VK_API_VERSION_1_1 = VK_MAKE_VERSION(1, 1, 0)
 
+#endif

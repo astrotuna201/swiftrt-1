@@ -14,6 +14,8 @@
 // limitations under the License.
 //
 import Foundation
+
+#if canImport(CCuda)
 import CCuda
 
 public class CudaDeviceArray : DeviceArray {
@@ -77,3 +79,5 @@ public class CudaDeviceArray : DeviceArray {
 		}
 	}
 }
+
+#endif

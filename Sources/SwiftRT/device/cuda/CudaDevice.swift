@@ -14,6 +14,8 @@
 // limitations under the License.
 //
 import Foundation
+
+#if canImport(CCuda)
 import CCuda
 
 public class CudaDevice : LocalComputeDevice {
@@ -136,3 +138,5 @@ public class CudaDevice : LocalComputeDevice {
 		try cudaCheck(status: cudaSetDevice(Int32(id)))
 	}
 }
+
+#endif

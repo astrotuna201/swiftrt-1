@@ -14,6 +14,8 @@
 // limitations under the License.
 //
 import Foundation
+
+#if canImport(CCuda)
 import CCuda
 
 public final class CudaQueueEvent : QueueEvent {
@@ -83,3 +85,5 @@ public final class CudaQueueEvent : QueueEvent {
         }
     }
 }
+
+#endif

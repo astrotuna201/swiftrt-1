@@ -14,6 +14,15 @@
 // limitations under the License.
 //
 import Foundation
+
+//==============================================================================
+/// a set of predefined property names to simplify configuring
+/// the service properties
+public enum CudaPropertyKey: Int {
+    case queuesPerDevice
+}
+
+#if canImport(CCuda)
 import CCuda
 
 //==============================================================================
@@ -90,14 +99,6 @@ public final class CudaService: LocalComputeService {
     deinit {
         ObjectTracker.global.remove(trackingId: trackingId)
     }
-}
-
-
-//==============================================================================
-/// a set of predefined property names to simplify configuring
-/// the service properties
-public enum CudaPropertyKey: Int {
-    case queuesPerDevice
 }
 
 //==============================================================================
@@ -194,12 +195,6 @@ public func curandGetErrorString(_ status: curandStatus_t) -> String {
 /// ReductionOp
 public enum ReductionOp: Int, Codable {
     case add, mul, min, max, amax, avg, norm1, norm2
-}
-
-//==============================================================================
-/// NanPropagation
-public enum NanPropagation: Int, Codable {
-    case propagate, noPropagate
 }
 
 //==============================================================================
@@ -762,3 +757,5 @@ public final class ReductionTensorDescriptor : ObjectTracking {
         ObjectTracker.global.remove(trackingId: trackingId)
 	}
 }
+
+#endif

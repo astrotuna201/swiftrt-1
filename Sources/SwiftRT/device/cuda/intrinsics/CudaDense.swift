@@ -13,6 +13,8 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 //
+
+#if canImport(CCuda)
 import CCuda
 
 public class CudaDense<T> where
@@ -141,3 +143,5 @@ public class CudaDense<T> where
         }
     }
 }
+
+#endif

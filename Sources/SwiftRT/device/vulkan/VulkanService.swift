@@ -14,6 +14,8 @@
 // limitations under the License.
 //
 import Foundation
+
+#if canImport(CVulkan)
 import CVulkan
 
 //==============================================================================
@@ -293,3 +295,5 @@ public enum VulkanPropertyKey: Int {
     case engineVersion
     case apiVersion
 }
+
+#endif
