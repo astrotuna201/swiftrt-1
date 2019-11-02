@@ -35,7 +35,7 @@ public class CpuDevice: LocalComputeDevice {
     
     //--------------------------------------------------------------------------
 	// initializers
-	public init(service: CpuComputeService,
+	public init(service: ComputeService,
                 deviceId: Int,
                 logInfo: LogInfo,
                 addressing: MemoryAddressing,
@@ -61,8 +61,8 @@ public class CpuDevice: LocalComputeDevice {
 
         //---------------------------------
         // create device queues
-        assert(service.configuration[.queuesPerDevice] is Int)
-        let queueCount = service.configuration[.queuesPerDevice] as! Int
+        assert(Platform.cpuConfiguration[.queuesPerDevice] is Int)
+        let queueCount = Platform.cpuConfiguration[.queuesPerDevice] as! Int
         var queues = [DeviceQueue]()
         for queueId in 0..<queueCount {
             let queueName = "queue:\(queueId)"

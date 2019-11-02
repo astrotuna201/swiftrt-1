@@ -16,14 +16,21 @@
 import Foundation
 
 //==============================================================================
-/// CpuComputeService
-public protocol CpuComputeService: ComputeService {
-    var configuration: [CpuPropertyKey: Any] { get set }
+/// cpuConfiguration
+/// used to override default cpu configuration
+public extension Platform {
+    static var cpuConfiguration = [CpuPropertyKey: Any]()
+}
+
+/// a set of predefined property names to simplify configuring
+/// the service properties
+public enum CpuPropertyKey: Int {
+    case queuesPerDevice
 }
 
 //==============================================================================
 /// CpuService
-public class CpuService: CpuComputeService, LocalComputeService {
+public class CpuService: ComputeService, LocalComputeService {
     // properties
     public private(set) weak var platform: ComputePlatform!
     public private(set) var trackingId = 0
@@ -72,16 +79,9 @@ public class CpuService: CpuComputeService, LocalComputeService {
 }
 
 //==============================================================================
-/// a set of predefined property names to simplify configuring
-/// the service properties
-public enum CpuPropertyKey: Int {
-    case queuesPerDevice
-}
-
-//==============================================================================
 /// TestCpuService
 /// A cpu implementation that acts like a discreet memory device
-public class TestCpuService: CpuComputeService, LocalComputeService {
+public class TestCpuService: ComputeService, LocalComputeService {
     // properties
     public private(set) weak var platform: ComputePlatform!
     public private(set) var trackingId = 0
