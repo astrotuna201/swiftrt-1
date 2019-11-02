@@ -299,7 +299,7 @@ public extension TensorView {
             return self
         } else {
             var result = createDense()
-            SwiftRT.copy(view: self, result: &result)
+            DeviceContext.currentQueue.copy(from: self, to: &result)
             return result
         }
     }

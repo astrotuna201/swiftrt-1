@@ -39,7 +39,7 @@ if getenv("SWIFTRT_ENABLE_VULKAN") != nil {
     targets.append(
         .systemLibrary(name: "CVulkan",
                        path: "Libraries/Vulkan",
-                       pkgConfig: "vulkan"))
+                       pkgConfig: "mac_vulkan"))
 } else {
     exclusions.append("device/vulkan")
 }

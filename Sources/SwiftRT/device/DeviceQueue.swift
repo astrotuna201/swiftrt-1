@@ -24,7 +24,7 @@ public protocol DeviceQueue:
     ObjectTracking,
     Logger,
     DeviceErrorHandling,
-    DeviceIntrinsics
+    DeviceFunctions
 {
     //--------------------------------------------------------------------------
     /// options to use when creating queue events
@@ -59,9 +59,9 @@ public protocol DeviceQueue:
     func waitUntilQueueIsComplete() throws
 
     //--------------------------------------------------------------------------
-    // data transport functions
-    /// clears the array to zero
-    func zero(array: DeviceArray) throws
+    /// copy
+    /// performs an indexed copy from view to result
+    func copy<T>(from view: T, to result: inout T) where T: TensorView
     /// asynchronously copies the contents of another device array
     func copyAsync(to array: DeviceArray, from otherArray: DeviceArray) throws
     /// asynchronously copies the contents of an app memory buffer
@@ -70,7 +70,9 @@ public protocol DeviceQueue:
     /// copies the contents to an app memory buffer asynchronously
     func copyAsync(to hostBuffer: UnsafeMutableRawBufferPointer,
                    from array: DeviceArray) throws
-    
+    /// clears the array to zero
+    func zero(array: DeviceArray) throws
+
     //--------------------------------------------------------------------------
     // debugging functions
     /// simulateWork(x:timePerElement:result:
