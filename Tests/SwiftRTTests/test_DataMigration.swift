@@ -193,218 +193,22 @@ class test_DataMigration: XCTestCase {
     //==========================================================================
     // test_mutateOnDevice
     func test_mutateOnDevice() {
-        do {
-            Platform.log.level = .diagnostic
-            Platform.log.categories = [.dataAlloc, .dataCopy, .dataMutation]
-
-            // create a named queue on two different discreet devices
-            // cpu devices 1 and 2 are discreet memory versions for testing
-            let device1 = Platform.testCpu1
-            let queue1 = device1.queues[0]
-            let device2 = Platform.testCpu2
-            let queue2 = device2.queues[0]
-
-            // create a Matrix on device 1 and fill with indexes
-            // memory is only allocated on device 1. This also shows how a
-            // temporary can be used in a scope. No memory is copied.
-            var matrix = using(device1) {
-                Matrix<Float>((3, 2)).filledWithIndex()
-            }
-
-            // retreive value on app thread
-            // memory is allocated in the host app space and the data is copied
-            // from device 1 to the host using queue 0.
-            let value1 = try matrix.value(at: (1, 1))
-            XCTAssert(value1 == 3.0)
-
-            // simulate a readonly kernel access on device 1.
-            // matrix was not previously modified, so it is up to date
-            // and no data movement is necessary
-            _ = try matrix.readOnly(using: queue1)
-
-            // sum device 1 copy, which should equal 15.
-            // This `sum` syntax creates a temporary result on device 1,
-            // then `asElement` causes the temporary to be transferred to
-            // the host, the value is retrieved, and the temp is released.
-            // This syntax is good for experiments, but should not be used
-            // for repetitive actions
-            var sum = try using(device1) {
-                try matrix.sum().asElement()
-            }
-            XCTAssert(sum == 15.0)
-
-            // copy the matrix and simulate a readOnly operation on device2
-            // a device array is allocated on device 2 then the master copy
-            // on device 1 is copied to device 2.
-            // Since device 1 and 2 are in the same service, a device to device
-            // async copy is performed. In the case of Cuda, it would travel
-            // across nvlink and not the PCI bus
-            let matrix2 = matrix
-            _ = try matrix2.readOnly(using: queue2)
-            
-            // copy matrix2 and simulate a readWrite operation on device2
-            // this causes copy on write and mutate on device
-            var matrix3 = matrix2
-            _ = try matrix3.readWrite(using: queue2)
-
-            // sum device 1 copy should be 15
-            // `sum` creates a temp result tensor, allocates an array on
-            // device 2, and performs the reduction.
-            // Then `asElement` causes a host array to be allocated, and the
-            // the data is copied from device 2 to host, the value is returned
-            // and the temporary tensor is released.
-            sum = try using(device2) {
-                try matrix.sum().asElement()
-            }
-            XCTAssert(sum == 15.0)
-
-            // matrix is overwritten with a new array on device 1
-            matrix = using(device1) {
-                matrix.filledWithIndex()
-            }
-            
-            // sum matrix on device 2
-            // `sum` creates a temporary result tensor on device 2
-            // a device array for `matrix` is allocated on device 2 and
-            // the matrix data is copied from device 1 to device 2
-            // then `asElement` creates a host array and the result is
-            // copied from device 2 to the host array, and then the tensor
-            // is released.
-            sum = try using(device2) {
-                try matrix.sum().asElement()
-            }
-            XCTAssert(sum == 15.0)
-
-            // exiting the scopy, matrix and matrix2 are released along
-            // with all resources on all devices.
-        } catch {
-            XCTFail(String(describing: error))
-        }
     }
 
     //--------------------------------------------------------------------------
     // test_copyOnWriteDevice
     func test_copyOnWriteDevice() {
-        do {
-            Platform.log.level = .diagnostic
-            Platform.log.categories = [.dataAlloc, .dataCopy, .dataMutation]
-            
-            // create a named queue on two different discreet devices
-            // cpu devices 1 and 2 are discreet memory versions for testing
-            let device1 = Platform.testCpu1
-
-            // fill with index on device 1
-            let index = (1, 1)
-            var matrix1 = Matrix<Float>((3, 2))
-            using(device1) {
-                fillWithIndex(&matrix1)
-            }
-            // testing a value causes the data to be copied to the host
-            var value = try matrix1.value(at: index)
-            XCTAssert(value == 3.0)
-            
-            // copy and mutate data
-            // the data will be duplicated wherever the source is
-            var matrix2 = matrix1
-            value = try matrix2.value(at: index)
-            XCTAssert(value == 3.0)
-            
-            // writing to matrix2 causes view mutation and copy on write
-            try matrix2.set(value: 7, at: index)
-            value = try matrix1.value(at: index)
-            XCTAssert(value == 3.0)
-            
-            value = try matrix2.value(at: index)
-            XCTAssert(value == 7.0)
-        } catch {
-            XCTFail(String(describing: error))
-        }
     }
 
     //--------------------------------------------------------------------------
     // test_copyOnWriteCrossDevice
     func test_copyOnWriteCrossDevice() {
-        do {
-            Platform.log.level = .diagnostic
-            Platform.log.categories = [.dataAlloc, .dataCopy, .dataMutation]
-            
-            // create a named queue on two different discreet devices
-            // cpu devices 1 and 2 are discreet memory versions for testing
-            let device1 = Platform.testCpu1
-            let queue1 = device1.queues[0]
-            let device2 = Platform.testCpu2
-            let queue2 = device2.queues[0]
-
-            let index = (1, 1)
-            var matrix1 = Matrix<Float>((3, 2))
-
-            // allocate array on device 1 and fill with indexes
-            using(device1) {
-                fillWithIndex(&matrix1)
-            }
-            
-            // getting a value causes the data to be copied to an
-            // array associated with the app thread
-            // The master version is stil on device 1
-            let value = try matrix1.value(at: index)
-            print(value)
-            XCTAssert(value == 3.0)
-
-            // simulate read only access on device 1 and 2
-            // data will be copied to device 2 for the first time
-            _ = try matrix1.readOnly(using: queue1)
-            _ = try matrix1.readOnly(using: queue2)
-
-            // sum device 1 copy should be 15
-            let sum1 = try using(device1) {
-                try matrix1.sum().asElement()
-            }
-            XCTAssert(sum1 == 15.0)
-
-            // clear the device 0 master copy
-            using(device1) {
-                fill(&matrix1, with: 0)
-            }
-
-            // sum device 1 copy should now also be 0
-            // sum device 1 copy should be 15
-            let sum2 = try using(device2) {
-                try matrix1.sum().asElement()
-            }
-            XCTAssert(sum2 == 0)
-            
-        } catch {
-            XCTFail(String(describing: error))
-        }
     }
 
     //--------------------------------------------------------------------------
     // test_copyOnWrite
     // NOTE: uses the default queue
     func test_copyOnWrite() {
-        do {
-            Platform.log.level = .diagnostic
-//            Platform.log.categories = [.dataAlloc, .dataCopy, .dataMutation]
-            
-            let index = (1, 1)
-            var matrix1 = Matrix<Float>((3, 2))
-            fillWithIndex(&matrix1)
-            var value = try matrix1.value(at: index)
-            XCTAssert(value == 3.0)
-            
-            var matrix2 = matrix1
-            value = try matrix2.value(at: index)
-            XCTAssert(value == 3.0)
-            
-            try matrix2.set(value: 7, at: index)
-            value = try matrix1.value(at: index)
-            XCTAssert(value == 3.0)
-            
-            value = try matrix2.value(at: index)
-            XCTAssert(value == 7.0)
-        } catch {
-            XCTFail(String(describing: error))
-        }
     }
 
     //--------------------------------------------------------------------------
