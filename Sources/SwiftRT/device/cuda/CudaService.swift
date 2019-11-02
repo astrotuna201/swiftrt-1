@@ -24,6 +24,19 @@ extension Platform {
     public static var cuda: CudaService? = {
         return Platform.local.services[cudaServiceName] as? CudaService
     }()
+    
+    /// cudaConfiguration
+    /// used to override default cpu configuration
+    static var cudaConfiguration: [CudaPropertyKey: Any] = [
+        .queuesPerDevice: 2
+    ]
+}
+
+//==============================================================================
+/// a set of predefined property names to simplify configuring
+/// the service properties
+public enum CudaPropertyKey: Int {
+    case queuesPerDevice
 }
 
 //==============================================================================
@@ -39,11 +52,6 @@ public final class CudaService: LocalComputeService {
     public let id: Int
     public var logInfo: LogInfo
     public let name: String
-    
-    // configuration and defaults
-    public var configuration: [CudaPropertyKey: Any] = [
-        .queuesPerDevice: 2
-    ]
 
     //--------------------------------------------------------------------------
     // timeout
@@ -100,14 +108,6 @@ public final class CudaService: LocalComputeService {
     deinit {
         ObjectTracker.global.remove(trackingId: trackingId)
     }
-}
-
-
-//==============================================================================
-/// a set of predefined property names to simplify configuring
-/// the service properties
-public enum CudaPropertyKey: Int {
-    case queuesPerDevice
 }
 
 //==============================================================================

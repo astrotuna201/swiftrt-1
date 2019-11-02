@@ -24,7 +24,6 @@ public final class CudaQueue: LocalDeviceQueue {
     public var defaultQueueEventOptions = QueueEventOptions()
     public var device: ComputeDevice { return cudaDevice }
     public let id: Int
-    public let uniqueId: Int = Platform.nextUniqueQueueId
     public let name: String
     public var logInfo: LogInfo
     public var timeout: TimeInterval?
@@ -155,14 +154,11 @@ public final class CudaQueue: LocalDeviceQueue {
     }
 
     //--------------------------------------------------------------------------
-    /// fills the device array with zeros
-    public func zero(array: DeviceArray) throws {
-        assert(array is CudaDeviceArray)
-        try cudaCheck(
-                status: cudaMemsetAsync(array.buffer.baseAddress!, Int32(0),
-                                        array.buffer.count, handle))
+    /// perform indexed copy from source view to result view
+    public func copy<T>(from view: T, to result: inout T) where T : TensorView {
+        fatalError("not implemented yet")
     }
-
+    
     //--------------------------------------------------------------------------
     /// copies from one device array to another
     public func copyAsync(to array: DeviceArray,
@@ -214,6 +210,15 @@ public final class CudaQueue: LocalDeviceQueue {
                 UnsafeRawPointer(array.buffer.baseAddress!),
                 array.buffer.count,
                 cudaMemcpyDeviceToHost, handle))
+    }
+    
+    //--------------------------------------------------------------------------
+    /// fills the device array with zeros
+    public func zero(array: DeviceArray) throws {
+        assert(array is CudaDeviceArray)
+        try cudaCheck(
+            status: cudaMemsetAsync(array.buffer.baseAddress!, Int32(0),
+                                    array.buffer.count, handle))
     }
     
     //--------------------------------------------------------------------------

@@ -87,8 +87,8 @@ public class CudaDevice : LocalComputeDevice {
 
         //---------------------------------
         // create device queues
-        assert(service.configuration[.queuesPerDevice] is Int)
-        let queueCount = service.configuration[.queuesPerDevice] as! Int
+        assert(Platform.cudaConfiguration[.queuesPerDevice] is Int)
+        let queueCount = Platform.cudaConfiguration[.queuesPerDevice] as! Int
         var queues = [DeviceQueue]()
         for queueId in 0..<queueCount {
             let queueName = "queue:\(queueId)"
