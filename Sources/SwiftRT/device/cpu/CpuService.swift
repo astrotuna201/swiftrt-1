@@ -18,7 +18,7 @@ import Foundation
 //==============================================================================
 /// CpuComputeService
 public protocol CpuComputeService: ComputeService {
-    var configuration: [CudaPropertyKey: Any] { get set }
+    var configuration: [CpuPropertyKey: Any] { get set }
 }
 
 //==============================================================================
@@ -36,7 +36,7 @@ public class CpuService: CpuComputeService, LocalComputeService {
     public let name: String
         
     // configuration and defaults
-    public var configuration: [CudaPropertyKey: Any] = [
+    public var configuration: [CpuPropertyKey: Any] = [
         .queuesPerDevice: 2
     ]
 
@@ -94,7 +94,7 @@ public class TestCpuService: CpuComputeService, LocalComputeService {
     public let name: String
     
     // configuration and defaults
-    public var configuration: [CudaPropertyKey: Any] = [
+    public var configuration: [CpuPropertyKey: Any] = [
         .queuesPerDevice: 2
     ]
     

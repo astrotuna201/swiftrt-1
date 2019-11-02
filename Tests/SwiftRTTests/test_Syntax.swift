@@ -15,7 +15,10 @@
 //
 import XCTest
 import Foundation
+
+#if canImport(CVulkan)
 import CVulkan
+#endif
 
 @testable import SwiftRT
 
@@ -59,6 +62,7 @@ class test_Syntax: XCTestCase {
     // sets properties in the Platform `serviceProperties` dictionary
     // to be used during compute service initialization
     func test_setServiceProperties() {
+        #if canImport(CVulkan)
         Platform.log.level = .diagnostic
         Platform.log.categories = [.properties]
         Platform.local.servicePriority = [vulkanServiceName]
@@ -77,6 +81,7 @@ class test_Syntax: XCTestCase {
         } catch {
             XCTFail(String(describing: error))
         }
+        #endif
     }
     
     //==========================================================================

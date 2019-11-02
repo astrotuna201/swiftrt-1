@@ -45,9 +45,7 @@ public extension DeviceQueue {
         strides: [Int],
         padding: [Int],
         dilations: [Int],
-        properties: ConvolutionProperties,
-        dataQueue: CudaQueue,
-        filterBiasBackQueue: CudaQueue) throws -> ConvolutionInferring<T>
+        properties: ConvolutionProperties) throws -> ConvolutionInferring<T>
         where T: TensorView, T.Element: AnyFloatingPoint
     {
         fatalError("cpu not implemented")
@@ -62,45 +60,7 @@ public extension DeviceQueue {
         strides: [Int],
         padding: [Int],
         dilations: [Int],
-        properties: ConvolutionProperties,
-        dataQueue: CudaQueue,
-        filterBiasBackQueue: CudaQueue) throws -> ConvolutionTraining<T>
-        where T: TensorView, T.Element: AnyFloatingPoint
-    {
-        fatalError("cpu not implemented")
-    }
-}
-
-public extension CudaQueue {
-    func createConvolutionInferring<T>(
-        x: T,
-        yShape: inout DataShape,
-        filter: T,
-        bias: T,
-        activation: ActivationMode,
-        strides: [Int],
-        padding: [Int],
-        dilations: [Int],
-        properties: ConvolutionProperties,
-        dataQueue: CudaQueue,
-        filterBiasBackQueue: CudaQueue) throws -> ConvolutionInferring<T>
-        where T: TensorView, T.Element: AnyFloatingPoint
-    {
-        fatalError("cpu not implemented")
-    }
-
-    func createConvolutionTraining<T>(
-        x: T,
-        yShape: inout DataShape,
-        filter: T,
-        bias: T,
-        activation: ActivationMode,
-        strides: [Int],
-        padding: [Int],
-        dilations: [Int],
-        properties: ConvolutionProperties,
-        dataQueue: CudaQueue,
-        filterBiasBackQueue: CudaQueue) throws -> ConvolutionTraining<T>
+        properties: ConvolutionProperties) throws -> ConvolutionTraining<T>
         where T: TensorView, T.Element: AnyFloatingPoint
     {
         fatalError("cpu not implemented")
@@ -225,20 +185,6 @@ public extension DeviceQueue {
         where T: TensorView, T.Element: AnyFloatingPoint
     {
         fatalError("cpu not implemented")
-    }
-}
-
-public extension CudaQueue {
-    func createActivation<T>(
-        x: T,
-        y: inout T,
-        mode: ActivationMode,
-        nan: NanPropagation,
-        reluCeiling: Double = 0) throws -> ActivationInferring<T>
-        where T: TensorView, T.Element: AnyFloatingPoint
-    {
-        return try CudaActivationInferring(x: x, y: &y, mode: mode,
-                                           nan: nan, reluCeiling: reluCeiling)
     }
 }
 

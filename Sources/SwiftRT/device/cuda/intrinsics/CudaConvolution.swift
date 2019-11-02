@@ -15,6 +15,41 @@
 //
 import CCuda
 
+
+//==============================================================================
+// 
+public extension CudaQueue {
+    func createConvolutionInferring<T>(
+        x: T,
+        yShape: inout DataShape,
+        filter: T,
+        bias: T,
+        activation: ActivationMode,
+        strides: [Int],
+        padding: [Int],
+        dilations: [Int],
+        properties: ConvolutionProperties) throws -> ConvolutionInferring<T>
+        where T: TensorView, T.Element: AnyFloatingPoint
+    {
+        fatalError("cpu not implemented")
+    }
+    
+    func createConvolutionTraining<T>(
+        x: T,
+        yShape: inout DataShape,
+        filter: T,
+        bias: T,
+        activation: ActivationMode,
+        strides: [Int],
+        padding: [Int],
+        dilations: [Int],
+        properties: ConvolutionProperties) throws -> ConvolutionTraining<T>
+        where T: TensorView, T.Element: AnyFloatingPoint
+    {
+        fatalError("cpu not implemented")
+    }
+}
+
 //==============================================================================
 // CudaConvolution
 public struct CudaConvolution<T>: Logging where

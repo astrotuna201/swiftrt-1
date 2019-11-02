@@ -17,6 +17,16 @@ import Foundation
 import CCuda
 
 //==============================================================================
+public let cudaServiceName = "cuda"
+
+extension Platform {
+    // shortcut to cuda sercoe
+    public static var cuda: CudaService? = {
+        return Platform.local.services[cudaServiceName] as? CudaService
+    }()
+}
+
+//==============================================================================
 // CudaService
 public final class CudaService: LocalComputeService {
     // properties
@@ -194,12 +204,6 @@ public func curandGetErrorString(_ status: curandStatus_t) -> String {
 /// ReductionOp
 public enum ReductionOp: Int, Codable {
     case add, mul, min, max, amax, avg, norm1, norm2
-}
-
-//==============================================================================
-/// NanPropagation
-public enum NanPropagation: Int, Codable {
-    case propagate, noPropagate
 }
 
 //==============================================================================

@@ -107,8 +107,6 @@ public enum ServiceError : Error {
 /// the service properties
 public let cpuServiceName = "cpu"
 public let testCpuServiceName = "testCpu"
-public let cudaServiceName = "cuda"
-public let vulkanServiceName = "vulkan"
 
 //==============================================================================
 public enum EvaluationMode {

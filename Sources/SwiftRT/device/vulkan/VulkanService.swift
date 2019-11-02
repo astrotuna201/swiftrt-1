@@ -17,6 +17,16 @@ import Foundation
 import CVulkan
 
 //==============================================================================
+public let vulkanServiceName = "vulkan"
+
+extension Platform {
+    // shortcut to vulkan service
+    public static var vulkan: VulkanService? = {
+        return Platform.local.services[vulkanServiceName] as? VulkanService
+    }()
+}
+
+//==============================================================================
 // VulkanService
 public final class VulkanService: LocalComputeService {
     // service protocol configuration

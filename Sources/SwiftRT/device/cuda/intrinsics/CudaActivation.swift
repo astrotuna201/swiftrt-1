@@ -16,6 +16,22 @@
 import CCuda
 
 //==============================================================================
+/// createActivation
+public extension CudaQueue {
+    func createActivation<T>(
+        x: T,
+        y: inout T,
+        mode: ActivationMode,
+        nan: NanPropagation,
+        reluCeiling: Double = 0) throws -> ActivationInferring<T>
+        where T: TensorView, T.Element: AnyFloatingPoint
+    {
+        return try CudaActivationInferring(x: x, y: &y, mode: mode,
+                                           nan: nan, reluCeiling: reluCeiling)
+    }
+}
+
+//==============================================================================
 /// CudaActivationInferring
 /// used to do activation inference
 public class CudaActivationInferring<T>: ActivationTraining<T>

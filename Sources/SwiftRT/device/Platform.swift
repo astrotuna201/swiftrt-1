@@ -28,8 +28,7 @@ final public class Platform: LocalPlatform {
     public var id: Int = 0
     public static let local = Platform()
     public var serviceModuleDirectory = URL(fileURLWithPath: "TODO")
-    public var servicePriority =
-        [cpuServiceName, cudaServiceName, vulkanServiceName]
+    public var servicePriority = [cpuServiceName]
     public lazy var services: [String : ComputeService] = {
         loadServices()
         return Platform._services!
@@ -59,16 +58,6 @@ final public class Platform: LocalPlatform {
     // shortcut to the cpu device
     public static var cpu: ComputeDevice = {
         return Platform.local.services[cpuServiceName]!.devices[0]
-    }()
-
-    // shortcut to cuda sercoe
-    public static var cuda: CudaService? = {
-        return Platform.local.services[cudaServiceName] as? CudaService
-    }()
-    
-    // shortcut to vulkan service
-    public static var vulkan: VulkanService? = {
-        return Platform.local.services[vulkanServiceName] as? VulkanService
     }()
 
     //--------------------------------------------------------------------------

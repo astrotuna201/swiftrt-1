@@ -33,11 +33,6 @@ public class CpuDevice: LocalComputeDevice {
     public var _lastError: Error? = nil
     public var _errorMutex: Mutex = Mutex()
     
-    // configuration and defaults
-    public var configuration: [CudaPropertyKey: Any] = [
-        .queuesPerDevice: 2
-    ]
-    
     //--------------------------------------------------------------------------
 	// initializers
 	public init(service: CpuComputeService,
