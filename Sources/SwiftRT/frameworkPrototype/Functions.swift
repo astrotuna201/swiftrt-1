@@ -49,3 +49,60 @@ public extension CpuQueue {
         }
     }
 }
+
+//==============================================================================
+// >>>>>> INTENT <<<<<<
+public extension DeviceFunctions {
+    /// fills the view with the scalar value
+    func fill<T>(_ result: inout T, with value: T.Element) where T: TensorView {
+        // TODO: can we hide the values/mutable values collections
+        var values = try! result.mutableValues()
+        for index in values.indices {
+            values[index] = value
+        }
+    }
+    
+    /// fills the view with the spatial sequential index
+    func fillWithIndex<T>(_ result: inout T, startAt: Int) where
+        T: TensorView, T.Element: AnyNumeric
+    {
+        // TODO: can we hide the values/mutable values collections
+        var value = startAt
+        var values = try! result.mutableValues()
+        for index in values.indices {
+            values[index] = T.Element(any: value)
+            value += 1
+        }
+    }
+}
+
+//******************************************************************************
+// >>>>>> GENERATED <<<<<<
+// @Target(type:"CPU", appliedTo:"CpuQueue", protocols:[DeviceFunctions])
+// target generated from Intent by the compiler
+public extension CpuQueue {
+    //--------------------------------------------------------------------------
+    /// fill(result:with:
+    /// NOTE: this can be much faster, doesn't need to be ordered access
+    func fill<T>(_ result: inout T, with value: T.Element) where T: TensorView {
+        queue(#function, {}, &result) {
+//            try result.readWrite().initialize(repeating: value)
+            for index in $1.indices { $1[index] = value }
+        }
+    }
+    
+    //--------------------------------------------------------------------------
+    /// fillWithIndex(x:startAt:
+    func fillWithIndex<T>(_ result: inout T, startAt: Int) where
+        T: TensorView, T.Element: AnyNumeric
+    {
+        queue(#function, {}, &result) {
+            var value = startAt
+            for index in $1.indices {
+                $1[index] = T.Element(any: value)
+                value += 1
+            }
+        }
+    }
+}
+
