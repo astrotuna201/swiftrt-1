@@ -42,8 +42,6 @@ public protocol DeviceQueue:
     /// the maximum time to wait for an operation to complete
     /// a value of 0 (default) will wait forever
     var timeout: TimeInterval? { get set }
-    /// a platform wide unique id used to identify the queue
-    var uniqueId: Int { get }
 
     //--------------------------------------------------------------------------
     // synchronization functions

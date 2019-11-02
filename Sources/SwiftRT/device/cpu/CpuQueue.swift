@@ -21,7 +21,6 @@ public final class CpuQueue: LocalDeviceQueue {
     public var defaultQueueEventOptions = QueueEventOptions()
 	public let device: ComputeDevice
     public let id: Int
-    public let uniqueId: Int = Platform.nextUniqueQueueId
 	public let name: String
     public var logInfo: LogInfo
     public var timeout: TimeInterval?

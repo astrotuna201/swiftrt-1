@@ -43,16 +43,6 @@ final public class Platform: LocalPlatform {
     public static var nextDeviceArrayReplicaKey: Int {
         return Platform.deviceArrayReplicaKeyCounter.increment()
     }
-    
-    /// This is used to provide a platform wide unique queue id set
-    /// during initialization of the `DeviceQueue.uniqueId` property
-    /// It is used during `TensorView` synchronize to detect if a tensor's
-    /// use is crossing from one device queue to another, and if
-    /// synchronization needs to be performed
-    private static var queueIdCounter = AtomicCounter(value: -1)
-    public static var nextUniqueQueueId: Int {
-        return Platform.queueIdCounter.increment()
-    }
 
     //--------------------------------------------------------------------------
     // shortcut to the cpu device
@@ -101,8 +91,6 @@ public protocol LocalPlatform : ComputePlatform {
     var _defaultDevice: ComputeDevice? { get set }
     /// a platform wide unique key used during device initialization
     static var nextDeviceArrayReplicaKey: Int { get }
-    /// a platform wide unique queue id obtained during initialization
-    static var nextUniqueQueueId: Int { get }
 }
 
 public extension LocalPlatform {
