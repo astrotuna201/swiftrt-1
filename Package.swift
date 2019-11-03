@@ -44,7 +44,7 @@ if enableCpuSync {
     dependencies.append("CpuSync")
     targets.append(
         .systemLibrary(name: "CpuSync",
-                       path: "Libraries/CpuSync"))
+                       path: "Modules/CpuSync"))
 }
 
 //---------------------------------------
@@ -54,7 +54,7 @@ if enableCpuAsync {
     dependencies.append("CpuAsync")
     targets.append(
         .systemLibrary(name: "CpuAsync",
-                       path: "Libraries/CpuAsync"))
+                       path: "Modules/CpuAsync"))
 }
 
 //---------------------------------------
@@ -64,7 +64,7 @@ if !disableTesting {
     dependencies.append("CpuTest")
     targets.append(
         .systemLibrary(name: "CpuTest",
-                       path: "Libraries/CpuTest"))
+                       path: "Modules/CpuTest"))
 }
 
 //---------------------------------------
@@ -74,7 +74,7 @@ if enableCuda {
     dependencies.append("CCuda")
     targets.append(
         .systemLibrary(name: "CCuda",
-                       path: "Libraries/Cuda",
+                       path: "Modules/Cuda",
                        pkgConfig: "cuda"))
 }
 
@@ -85,7 +85,7 @@ if enableVulkan {
     dependencies.append("CVulkan")
     targets.append(
         .systemLibrary(name: "CVulkan",
-                       path: "Libraries/Vulkan",
+                       path: "Modules/Vulkan",
                        pkgConfig: "mac_vulkan"))
 }
 
