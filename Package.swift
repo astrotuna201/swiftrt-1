@@ -96,17 +96,7 @@ if !enableCpuAsync { exclusions.append("device/cpu/async") }
 if !enableTestCpu  { exclusions.append("device/cpu/test") }
 if !enableCuda     { exclusions.append("device/cuda") }
 if !enableVulkan   { exclusions.append("device/vulkan") }
-print("exclusions: \(exclusions)")
-
-//---------------------------------------
-// target library and tests
-//targets.append(contentsOf: [
-//    .target(name: "SwiftRT",
-//            dependencies: dependencies,
-//            exclude: exclusions),
-//    .testTarget(name: "SwiftRTTests",
-//                dependencies: ["SwiftRT"]),
-//])
+//print("exclusions: \(exclusions)")
 
 targets.append(
     .target(name: "SwiftRT",
