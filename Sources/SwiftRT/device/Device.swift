@@ -105,7 +105,8 @@ public enum ServiceError : Error {
 //==============================================================================
 /// a set of predefined property names to simplify configuring
 /// the service properties
-public let cpuServiceName = "cpu"
+public let cpuSynchronousServiceName = "cpuSync"
+public let cpuAsynchronousServiceName = "cpuAsync"
 public let testCpuServiceName = "testCpu"
 
 //==============================================================================
@@ -119,6 +120,8 @@ public enum EvaluationMode {
 //==============================================================================
 /// LocalComputeService
 public protocol LocalComputeService: ComputeService { }
+public protocol CpuServiceProtocol {}
+
 
 public extension LocalComputeService {
     //--------------------------------------------------------------------------

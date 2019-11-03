@@ -28,7 +28,7 @@ final public class Platform: LocalPlatform {
     public var id: Int = 0
     public static let local = Platform()
     public var serviceModuleDirectory = URL(fileURLWithPath: "TODO")
-    public var servicePriority = [cpuServiceName]
+    public var servicePriority: [String] = []
     public lazy var services: [String : ComputeService] = {
         loadServices()
         return Platform._services!
@@ -47,7 +47,12 @@ final public class Platform: LocalPlatform {
     //--------------------------------------------------------------------------
     // shortcut to the cpu device
     public static var cpu: ComputeDevice = {
-        return Platform.local.services[cpuServiceName]!.devices[0]
+        for service in Platform.local.services.values {
+            if service is CpuServiceProtocol {
+                return service.devices[0]
+            }
+        }
+        fatalError("missing CPU device. Must be enabled during build")
     }()
 
     //--------------------------------------------------------------------------
@@ -83,6 +88,13 @@ final public class Platform: LocalPlatform {
 }
 
 //==============================================================================
+/// a set of predefined property names to simplify configuring
+/// the service properties
+public enum CpuPropertyKey: Int {
+    case queuesPerDevice
+}
+
+//==============================================================================
 /// LocalPlatform
 /// The default ComputePlatform implementation for a local host
 public protocol LocalPlatform : ComputePlatform {
@@ -103,6 +115,10 @@ public extension LocalPlatform {
         get { return Platform.local.log }
         set { Platform.local.log = newValue }
     }
+    
+    static var cpuConfiguration: [CpuPropertyKey: Any] { [
+        .queuesPerDevice: 1
+        ] }
     
     //--------------------------------------------------------------------------
     /// handleDevice(error:
@@ -125,20 +141,34 @@ public extension LocalPlatform {
         var loadedServices = [String: ComputeService]()
         do {
             //-------------------------------------
-            // add required cpu service
-            loadedServices[cpuServiceName] =
-                try CpuService(platform: Platform.local,
-                               id: loadedServices.count,
-                               logInfo: logInfo,
-                               name: cpuServiceName)
+            // add synchronous cpu components
+            #if canImport(CpuSync)
+            loadedServices[cpuSynchronousServiceName] =
+                try CpuSynchronousService(platform: Platform.local,
+                                          id: loadedServices.count,
+                                          logInfo: logInfo,
+                                          name: cpuSynchronousServiceName)
+            #endif
+            
+            //-------------------------------------
+            // add asynchronous cpu components
+            #if canImport(CpuAsync)
+            loadedServices[cpuAsynchronousServiceName] =
+                try CpuAsynchronousService(platform: Platform.local,
+                                           id: loadedServices.count,
+                                           logInfo: logInfo,
+                                           name: cpuAsynchronousServiceName)
+            #endif
             
             //-------------------------------------
             // add discreet test cpu service
+            #if canImport(CpuTest)
             loadedServices[testCpuServiceName] =
                 try TestCpuService(platform: Platform.local,
                                    id: loadedServices.count,
                                    logInfo: logInfo,
                                    name: testCpuServiceName)
+            #endif
             
             //-------------------------------------
             // statically include driver modules if they are available

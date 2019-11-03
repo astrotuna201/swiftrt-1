@@ -39,7 +39,8 @@ public extension DeviceFunctions {
 // >>>>>> GENERATED <<<<<<
 // @Target(type:"CPU", appliedTo:"CpuQueue", protocols:[DeviceFunctions])
 // target generated from Intent by the compiler
-public extension CpuQueue {
+#if canImport(CpuAsync)
+public extension CpuAsynchronousQueue {
     /// neg
     func neg<T>(x: T, result: inout T) where
         T: TensorView, T.Element: SignedNumeric
@@ -49,6 +50,7 @@ public extension CpuQueue {
         }
     }
 }
+#endif
 
 //==============================================================================
 // >>>>>> INTENT <<<<<<
@@ -80,7 +82,8 @@ public extension DeviceFunctions {
 // >>>>>> GENERATED <<<<<<
 // @Target(type:"CPU", appliedTo:"CpuQueue", protocols:[DeviceFunctions])
 // target generated from Intent by the compiler
-public extension CpuQueue {
+#if canImport(CpuAsync)
+public extension CpuAsynchronousQueue {
     //--------------------------------------------------------------------------
     /// fill(result:with:
     /// NOTE: this can be much faster, doesn't need to be ordered access
@@ -105,4 +108,4 @@ public extension CpuQueue {
         }
     }
 }
-
+#endif

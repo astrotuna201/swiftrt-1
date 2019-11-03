@@ -16,7 +16,17 @@
 import Foundation
 import Dispatch
 
-public class CpuDevice: LocalComputeDevice {
+//==============================================================================
+/// CpuQueueProtocol
+public protocol CpuQueueProtocol: DeviceQueue {
+    init(logInfo: LogInfo, device: ComputeDevice, name: String, id: Int)
+}
+
+//==============================================================================
+/// CpuDevice
+public class CpuDevice<QueueT>: LocalComputeDevice
+    where QueueT: CpuQueueProtocol
+{
     //--------------------------------------------------------------------------
     // properties
     public private(set) var trackingId = 0
@@ -66,9 +76,9 @@ public class CpuDevice: LocalComputeDevice {
         var queues = [DeviceQueue]()
         for queueId in 0..<queueCount {
             let queueName = "queue:\(queueId)"
-            queues.append(CpuQueue(logInfo: logInfo.flat(queueName),
-                                   device: self, name: queueName,
-                                   id: queueId))
+            queues.append(QueueT(logInfo: logInfo.flat(queueName),
+                                 device: self, name: queueName,
+                                 id: queueId))
         }
         self.queues = queues
 

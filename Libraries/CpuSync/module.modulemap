@@ -1,0 +1,3 @@
+module CpuSync [system] {
+	header "include_cpusync.h"
+}

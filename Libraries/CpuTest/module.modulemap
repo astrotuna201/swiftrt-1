@@ -1,0 +1,3 @@
+module CpuTest [system] {
+	header "include_cputest.h"
+}

@@ -1,0 +1,3 @@
+module CpuAsync [system] {
+	header "include_cpuasync.h"
+}

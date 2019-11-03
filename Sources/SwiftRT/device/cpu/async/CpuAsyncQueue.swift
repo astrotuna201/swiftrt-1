@@ -15,7 +15,7 @@
 //
 import Foundation
 
-public final class CpuQueue: LocalDeviceQueue {
+public final class CpuAsynchronousQueue: CpuQueueProtocol, LocalDeviceQueue {
 	// protocol properties
 	public private(set) var trackingId = 0
     public var defaultQueueEventOptions = QueueEventOptions()
@@ -156,7 +156,7 @@ public final class CpuQueue: LocalDeviceQueue {
     /// createEvent
     /// creates an event object used for queue synchronization
     public func createEvent(options: QueueEventOptions) throws -> QueueEvent {
-        let event = CpuQueueEvent(options: options, timeout: timeout)
+        let event = CpuAsyncEvent(options: options, timeout: timeout)
         diagnostic("\(createString) QueueEvent(\(event.trackingId)) on " +
             "\(device.name)_\(name)", categories: .queueAlloc)
         return event
@@ -167,7 +167,7 @@ public final class CpuQueue: LocalDeviceQueue {
     @discardableResult
     public func record(event: QueueEvent) throws -> QueueEvent {
         guard lastError == nil else { throw lastError! }
-        let event = event as! CpuQueueEvent
+        let event = event as! CpuAsyncEvent
         diagnostic("\(recordString) QueueEvent(\(event.trackingId)) on " +
             "\(device.name)_\(name)", categories: .queueSync)
         

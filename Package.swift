@@ -10,6 +10,25 @@ import Darwin.C
 #endif
 
 //---------------------------------------
+// test for enabled components
+func isEnabled(_ id: String) -> Bool { getenv(id) != nil }
+let enableAll = isEnabled("SWIFTRT_ENABLE_ALL_SERVICES")
+let disableTesting = isEnabled("SWIFTRT_DISABLE_TESTING")
+let enableCuda = enableAll || isEnabled("SWIFTRT_ENABLE_CUDA")
+let enableVulkan = enableAll || isEnabled("SWIFTRT_ENABLE_VULKAN")
+
+// if using cuda or vulkan then the default is an async cpu
+let enableCpuAsync = enableAll || !disableTesting ||
+    isEnabled("SWIFTRT_ENABLE_ASYNC_CPU") || enableCuda || enableVulkan
+
+// synchronous CPU is the default case
+let enableCpuSync = enableAll || isEnabled("SWIFTRT_ENABLE_SYNC_CPU") ||
+    !enableCpuAsync
+
+// discreet asynchronous CPU for unit testing
+let enableTestCpu = !disableTesting
+
+//---------------------------------------
 // the base products, dependencies, and targets
 var products: [PackageDescription.Product] = [
     .library(name: "SwiftRT", targets: ["SwiftRT"])
@@ -19,40 +38,86 @@ var exclusions: [String] = []
 var targets: [PackageDescription.Target] = []
 
 //---------------------------------------
+// include the cpu asynchronous service module
+if enableCpuSync {
+    products.append(.library(name: "CpuSync", targets: ["CpuSync"]))
+    dependencies.append("CpuSync")
+    targets.append(
+        .systemLibrary(name: "CpuSync",
+                       path: "Libraries/CpuSync"))
+}
+
+//---------------------------------------
+// include the cpu asynchronous service module
+if enableCpuAsync {
+    products.append(.library(name: "CpuAsync", targets: ["CpuAsync"]))
+    dependencies.append("CpuAsync")
+    targets.append(
+        .systemLibrary(name: "CpuAsync",
+                       path: "Libraries/CpuAsync"))
+}
+
+//---------------------------------------
+// include the cpu asynchronous discreet test service module
+if !disableTesting {
+    products.append(.library(name: "CpuTest", targets: ["CpuTest"]))
+    dependencies.append("CpuTest")
+    targets.append(
+        .systemLibrary(name: "CpuTest",
+                       path: "Libraries/CpuTest"))
+}
+
+//---------------------------------------
 // include the Cuda service module
-if getenv("SWIFTRT_ENABLE_CUDA") != nil {
+if enableCuda {
     products.append(.library(name: "CCuda", targets: ["CCuda"]))
     dependencies.append("CCuda")
     targets.append(
         .systemLibrary(name: "CCuda",
                        path: "Libraries/Cuda",
                        pkgConfig: "cuda"))
-} else {
-    exclusions.append("device/cuda")
 }
 
 //---------------------------------------
 // include the Vulkan service module
-if getenv("SWIFTRT_ENABLE_VULKAN") != nil {
+if enableVulkan {
     products.append(.library(name: "CVulkan", targets: ["CVulkan"]))
     dependencies.append("CVulkan")
     targets.append(
         .systemLibrary(name: "CVulkan",
                        path: "Libraries/Vulkan",
                        pkgConfig: "mac_vulkan"))
-} else {
-    exclusions.append("device/vulkan")
 }
 
 //---------------------------------------
+// excluded unused component code
+if !enableCpuSync  { exclusions.append("device/cpu/sync") }
+if !enableCpuAsync { exclusions.append("device/cpu/async") }
+if !enableTestCpu  { exclusions.append("device/cpu/test") }
+if !enableCuda     { exclusions.append("device/cuda") }
+if !enableVulkan   { exclusions.append("device/vulkan") }
+print("exclusions: \(exclusions)")
+
+//---------------------------------------
 // target library and tests
-targets.append(contentsOf: [
+//targets.append(contentsOf: [
+//    .target(name: "SwiftRT",
+//            dependencies: dependencies,
+//            exclude: exclusions),
+//    .testTarget(name: "SwiftRTTests",
+//                dependencies: ["SwiftRT"]),
+//])
+
+targets.append(
     .target(name: "SwiftRT",
             dependencies: dependencies,
-            exclude: exclusions),
-    .testTarget(name: "SwiftRTTests",
-                dependencies: ["SwiftRT"]),
-])
+            exclude: exclusions))
+
+if !disableTesting {
+    targets.append(
+        .testTarget(name: "SwiftRTTests",
+                    dependencies: ["SwiftRT"]))
+}
 
 //---------------------------------------
 // package specification

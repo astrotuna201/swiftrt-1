@@ -19,7 +19,7 @@ import Foundation
 // CpuQueueEvent
 /// a queue event behaves like a barrier. The first caller to wait takes
 /// the wait semaphore
-final public class CpuQueueEvent : QueueEvent {
+final public class CpuSyncEvent : QueueEvent {
     // properties
     public private(set) var trackingId = 0
     public private(set) var occurred: Bool = false
